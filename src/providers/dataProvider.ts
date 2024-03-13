@@ -1,14 +1,13 @@
-import { DataProvider } from "@refinedev/core";
-import simpleDataProvider from "@refinedev/simple-rest";
-import { API_URL } from "../contexts/constant";
+import { DataProvider } from '@refinedev/core';
+import simpleDataProvider from '@refinedev/simple-rest';
+import { API_URL } from '../contexts/constant';
+
 const simpleRestProvider = simpleDataProvider(API_URL);
 export const dataProvider: DataProvider = {
   ...simpleRestProvider,
   getOne: async ({ resource, id }) => {
     try {
-      const response = await fetch(
-        `${API_URL}/${resource}/${encodeURIComponent(id)}`
-      );
+      const response = await fetch(`${API_URL}/${resource}/${encodeURIComponent(id)}`);
 
       if (!response.ok) {
         throw new Error(`Error fetching resource: ${response.statusText}`);
@@ -16,7 +15,7 @@ export const dataProvider: DataProvider = {
       const data = await response.json();
       return { data };
     } catch (error) {
-      console.error("Error in getOne:", error);
+      console.error('Error in getOne:', error);
       throw error;
     }
   },
