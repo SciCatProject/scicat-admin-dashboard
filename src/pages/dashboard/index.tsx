@@ -1,24 +1,25 @@
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import Grid from '@mui/material/Grid';
-import { useTable } from '@refinedev/core';
+import { useDataGrid } from '@refinedev/mui';
 import { DatasetsLineChart } from '../../components/dashboard/datasetsChart';
 import { IDataset } from '../../interfaces/datasets';
 export const DashboardPage = () => {
-  const queryFilter = JSON.stringify({
-    limits: { limit: 20000, skip: 0, order: 'asc' },
-    fields: ['creationTime'],
-  });
+  const filters = `filter=${encodeURIComponent(
+    JSON.stringify({
+      fields: ['creationTime'],
+      limits: { limit: 50000, skip: 0, order: 'asc' },
+    })
+  )}`;
 
-  const { tableQueryResult, setFilters, setCurrent, filters, pageCount } = useTable<IDataset>({
-    resource: 'datasets',
-    initialPageSize: 10,
+  const { tableQueryResult } = useDataGrid<IDataset>({
+    resource: 'dashboard',
     filters: {
       initial: [
         {
-          field: 'filter',
+          field: 'filters',
           operator: 'eq',
-          value: queryFilter,
+          value: filters,
         },
       ],
     },

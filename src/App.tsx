@@ -9,10 +9,11 @@ import {
   RefineSnackbarProvider,
   ThemedLayoutV2,
   RefineThemes,
-  AuthPage,
   useNotificationProvider,
   ThemedTitleV2,
 } from '@refinedev/mui';
+
+import { AuthPage } from './components/auth';
 import StorageIcon from '@mui/icons-material/Storage';
 import PeopleIcon from '@mui/icons-material/People';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -32,6 +33,7 @@ import { DatasetList, DatasetShow } from './pages/datasets';
 import { UsersShow, UsersList } from './pages/users';
 import { DashboardPage } from './pages/dashboard';
 import { authProvider } from './providers/authProvider';
+import { datasetsProvider } from './providers/datasetsProvider';
 
 function App() {
   return (
@@ -44,7 +46,10 @@ function App() {
             <RefineSnackbarProvider>
               {/* <DevtoolsProvider> */}
               <Refine
-                dataProvider={dataProvider}
+                dataProvider={{
+                  default: dataProvider,
+                  datasets: datasetsProvider,
+                }}
                 notificationProvider={useNotificationProvider}
                 authProvider={authProvider}
                 routerProvider={routerBindings}
@@ -53,6 +58,7 @@ function App() {
                     name: 'dashboard',
                     list: '/',
                     meta: {
+                      dataProviderName: 'default',
                       icon: <DashboardIcon />,
                     },
                   },
@@ -61,6 +67,7 @@ function App() {
                     list: '/datasets',
                     show: '/datasets/:id',
                     meta: {
+                      dataProviderName: 'datasets',
                       icon: <StorageIcon />,
                     },
                   },
@@ -128,8 +135,8 @@ function App() {
                           type='login'
                           formProps={{
                             defaultValues: {
-                              email: 'demo@refine.dev',
-                              password: 'demodemo',
+                              username: '',
+                              password: '',
                             },
                           }}
                           title={<h1>Scicat Admin</h1>}

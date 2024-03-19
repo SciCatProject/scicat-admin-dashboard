@@ -4,11 +4,13 @@ import { API_URL, TOKEN_KEY } from '../contexts/constant';
 import { encode } from 'punycode';
 
 const simpleRestProvider = simpleDataProvider(API_URL);
-export const dataProvider: DataProvider = {
+export const datasetsProvider: DataProvider = {
   ...simpleRestProvider,
   getOne: async ({ resource, id }) => {
     try {
-      const response = await fetch(`${API_URL}/${resource}/${encodeURIComponent(id)}`);
+      const response = await fetch(`${API_URL}/datasets/${encodeURIComponent(id)}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}` },
+      });
 
       if (!response.ok) {
         throw new Error(`Error fetching resource: ${response.statusText}`);
@@ -21,7 +23,6 @@ export const dataProvider: DataProvider = {
     }
   },
   getList: async ({ resource, pagination, sorters, filters, meta }: any) => {
-    console.log('-dataProvider');
     const facets = ['type', 'creationLocation', 'ownerGroup', 'keywords'];
     let limits: any = {
       skip: pagination?.current === 1 ? 0 : pagination?.current * pagination?.pageSize,
@@ -33,7 +34,7 @@ export const dataProvider: DataProvider = {
       JSON.stringify({ mode: {} })
     )}&facets=${encodeURIComponent(JSON.stringify(facets))}`;
 
-    const fullQueryURL = `${API_URL}/datasets?${filters[0].value}`;
+    const fullQueryURL = `${API_URL}/datasets/fullquery?${filters[0].value}`;
 
     const fullFacetURL = `${API_URL}/datasets/fullfacet?${fullFacetParams}`;
 
