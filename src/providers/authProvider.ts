@@ -62,7 +62,7 @@ export const authProvider: AuthBindings = {
     if (token) {
       return {
         id: 1,
-        name: 'John Doe',
+        name: 'Admin',
         avatar: 'https://i.pravatar.cc/300',
       };
     }
