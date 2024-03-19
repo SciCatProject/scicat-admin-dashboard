@@ -1,15 +1,31 @@
 import type { AuthBindings } from '@refinedev/core';
-
-export const TOKEN_KEY = 'refine-auth';
+import { API_URL, TOKEN_KEY } from '../contexts/constant';
 
 export const authProvider: AuthBindings = {
   login: async ({ username, email, password }) => {
     if ((username || email) && password) {
-      localStorage.setItem(TOKEN_KEY, username);
-      return {
-        success: true,
-        redirectTo: '/',
-      };
+      const response = await fetch(`${API_URL}/users/login`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username || email,
+          password: password,
+        }),
+      });
+
+      const { access_token } = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem(TOKEN_KEY, access_token);
+
+        return {
+          success: true,
+          redirectTo: '/',
+        };
+      }
     }
 
     return {
