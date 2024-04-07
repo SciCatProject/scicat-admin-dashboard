@@ -38,50 +38,13 @@ const columns: GridColDef<IDataset>[] = [
 ];
 
 export const DatasetList: React.FC<IResourceComponentsProps> = () => {
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 5,
-    page: 0,
-  });
-
-  const [filters, setFilters] = useState({
-    fields: {},
-    limits: {
-      size: paginationModel.pageSize,
-      limit: paginationModel.page,
-      order: 'creationTime: desc',
-    },
-  });
-
-  useEffect(() => {
-    setFilters({
-      ...filters,
-      limits: {
-        size: paginationModel.page * paginationModel.pageSize,
-        limit: paginationModel.pageSize,
-        order: 'asc',
-      },
-    });
-  }, [paginationModel]);
-
   const { dataGridProps } = useDataGrid<IDataset>({
     resource: 'datasets',
-    filters: {
-      initial: [
-        {
-          field: 'limits',
-          operator: 'eq',
-          value: `fields=${encodeURIComponent(
-            JSON.stringify(filters.fields)
-          )}&limits=${encodeURIComponent(JSON.stringify(filters.limits))}`,
-        },
-      ],
-    },
-    pagination: {
-      mode: 'server',
-    },
+    initialPageSize: 10,
   });
 
-  const { paginationMode, onPaginationModelChange, ...restDataGridProps } = dataGridProps;
+  const { paginationMode, paginationModel, onPaginationModelChange, ...restDataGridProps } =
+    dataGridProps;
 
   return (
     <List>
@@ -89,10 +52,10 @@ export const DatasetList: React.FC<IResourceComponentsProps> = () => {
         {...restDataGridProps}
         columns={columns}
         autoHeight
-        paginationMode='server'
-        pageSizeOptions={[5, 10, 25, 100]}
-        onPaginationModelChange={setPaginationModel}
+        pageSizeOptions={[10, 25, 50, 100]}
+        paginationMode={paginationMode}
         paginationModel={paginationModel}
+        onPaginationModelChange={onPaginationModelChange}
       />
     </List>
   );

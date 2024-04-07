@@ -25,17 +25,22 @@ export const datasetsProvider: DataProvider = {
   getList: async ({ resource, pagination, sorters, filters, meta }: any) => {
     const facets = ['type', 'creationLocation', 'ownerGroup', 'keywords'];
     let limits: any = {
-      skip: pagination?.current === 1 ? 0 : pagination?.current * pagination?.pageSize,
-      limit: pagination?.pageSize,
+      skip: pagination?.current * pagination?.pageSize || 0,
+      limit: pagination?.pageSize || 25,
       order: 'creationTime:asc',
     };
+
+    const fullQueryParams = `fields=${encodeURIComponent(
+      JSON.stringify({})
+    )}&limits=${encodeURIComponent(JSON.stringify(limits))}
+    `;
 
     const fullFacetParams = `fields=${encodeURIComponent(
       JSON.stringify({ mode: {} })
     )}&facets=${encodeURIComponent(JSON.stringify(facets))}`;
 
-    const fullQueryURL = `${API_URL}/datasets/fullquery?${filters[0].value}`;
-
+    limits;
+    const fullQueryURL = `${API_URL}/datasets/fullquery?${fullQueryParams}`;
     const fullFacetURL = `${API_URL}/datasets/fullfacet?${fullFacetParams}`;
 
     const fullQueryRes = await fetch(fullQueryURL, {

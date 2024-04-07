@@ -21,31 +21,19 @@ export const dataProvider: DataProvider = {
     }
   },
   getList: async ({ resource, pagination, sorters, filters, meta }: any) => {
-    console.log('-dataProvider');
-    const facets = ['type', 'creationLocation', 'ownerGroup', 'keywords'];
-    let limits: any = {
-      skip: pagination?.current === 1 ? 0 : pagination?.current * pagination?.pageSize,
-      limit: pagination?.pageSize,
-      order: 'creationTime:asc',
-    };
+    const findAll = `${API_URL}/datasets?${filters[0].value}`;
 
-    const fullFacetParams = `fields=${encodeURIComponent(
-      JSON.stringify({ mode: {} })
-    )}&facets=${encodeURIComponent(JSON.stringify(facets))}`;
-
-    const fullQueryURL = `${API_URL}/datasets?${filters[0].value}`;
-
-    const fullQueryRes = await fetch(fullQueryURL, {
+    const findAllRes = await fetch(findAll, {
       headers: { Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}` },
     });
 
-    if (fullQueryRes.status < 200 || fullQueryRes.status > 299) throw fullQueryRes;
+    if (findAllRes.status < 200 || findAllRes.status > 299) throw new Error('find All failed');
 
-    const data = await fullQueryRes.json();
+    const data = await findAllRes.json();
 
     return {
       data,
-      total: data.length, // We'll cover this in the next steps.
+      total: data.length,
     };
   },
 };
