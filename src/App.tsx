@@ -33,7 +33,7 @@ import { DatasetList, DatasetShow } from './pages/datasets';
 import { UsersShow, UsersList } from './pages/users';
 import { DashboardPage } from './pages/dashboard';
 import { authProvider } from './providers/authProvider';
-import { datasetsProvider } from './providers/datasetsProvider';
+import { datasetsProvider } from './providers/datasets/datasetsProvider';
 
 function App() {
   return (

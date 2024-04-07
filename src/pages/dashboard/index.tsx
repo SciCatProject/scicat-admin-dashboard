@@ -8,7 +8,7 @@ export const DashboardPage = () => {
   const filters = `filter=${encodeURIComponent(
     JSON.stringify({
       fields: ['creationTime'],
-      limits: { limit: 50000, skip: 0, order: 'asc' },
+      limits: { limit: 50000, skip: 0, order: 'creationTime:asc' },
     })
   )}`;
 

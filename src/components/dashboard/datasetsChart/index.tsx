@@ -1,18 +1,7 @@
-import { ArrowDropUp, ArrowDropDown } from '@mui/icons-material';
-import { Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import Box from '@mui/material/Box';
-import { useTable } from '@refinedev/core';
 import { NumberField } from '@refinedev/mui';
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  Tooltip,
-  CartesianGrid,
-  Legend,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { ResponsiveContainer, LineChart, Line, Tooltip, Legend, XAxis, YAxis } from 'recharts';
 import {
   DatasetsCountPerMonth,
   DatasetsLineChartProps,
@@ -47,34 +36,19 @@ export const DatasetsLineChart = ({ data, count }: DatasetsLineChartProps) => {
       }}
     >
       <Stack>
-        {/* <Typography variant='h5' sx={{ color: '#fff', fontWeight: 700, mb: 0 }}>
-          Monthly Dataset Creation Overview
-        </Typography> */}
         <Stack direction='row' alignItems='center'>
           <NumberField
             style={{ fontSize: 36 }}
             sx={{ fontWeight: 700, color: '#fff' }}
-            // options={{
-            //   currency: 'USD',
-            //   style: 'currency',
-            //   notation: 'compact',
-            // }}
             value={count}
           />
-          {/* {(tableQueryResult?.data?.trend ?? 0) > 0 ? (
-            <ArrowDropUp fontSize='large' color='success' />
-          ) : (
-            <ArrowDropDown fontSize='large' color='error' />
-          )} */}
         </Stack>
       </Stack>
       <Box sx={{ height: '80%' }}>
         <ResponsiveContainer width='99%'>
           <LineChart data={chartData}>
-            {/* <CartesianGrid strokeDasharray='3 3' /> */}
             <XAxis dataKey='month' />
             <YAxis />
-            {/* <Tooltip /> */}
             <Legend />
             <Line type='monotone' dataKey='count' stroke='#8884d8' />
             <Tooltip content={<ChartTooltip suffix='' />} />

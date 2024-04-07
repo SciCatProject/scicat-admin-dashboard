@@ -1,6 +1,6 @@
 import { DataProvider } from '@refinedev/core';
 import simpleDataProvider from '@refinedev/simple-rest';
-import { API_URL, TOKEN_KEY } from '../contexts/constant';
+import { API_URL, TOKEN_KEY } from '../../contexts/constant';
 import { encode } from 'punycode';
 
 const simpleRestProvider = simpleDataProvider(API_URL);

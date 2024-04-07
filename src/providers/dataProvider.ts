@@ -35,23 +35,17 @@ export const dataProvider: DataProvider = {
 
     const fullQueryURL = `${API_URL}/datasets?${filters[0].value}`;
 
-    const fullFacetURL = `${API_URL}/datasets/fullfacet?${fullFacetParams}`;
-
     const fullQueryRes = await fetch(fullQueryURL, {
-      headers: { Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}` },
-    });
-    const fullFacetRes = await fetch(fullFacetURL, {
       headers: { Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}` },
     });
 
     if (fullQueryRes.status < 200 || fullQueryRes.status > 299) throw fullQueryRes;
 
     const data = await fullQueryRes.json();
-    const count = await fullFacetRes.json();
 
     return {
       data,
-      total: count[0].all[0].totalSets, // We'll cover this in the next steps.
+      total: data.length, // We'll cover this in the next steps.
     };
   },
 };
