@@ -24,6 +24,6 @@ export const fetchResource = async (url: string, method: HttpMethods = 'GET') =>
       Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
     },
   });
-  if (!response.ok) throw new Error('Failed to fetch data');
+  if (!response.ok) throw new Error(`Failed to fetch data: ${response.url}`);
   return response.json();
 };
