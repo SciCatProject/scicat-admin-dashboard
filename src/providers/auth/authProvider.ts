@@ -1,5 +1,5 @@
 import type { AuthBindings } from '@refinedev/core';
-import { API_URL, TOKEN_KEY } from '../contexts/constant';
+import { API_URL, TOKEN_KEY } from '../../contexts/constant';
 
 export const authProvider: AuthBindings = {
   login: async ({ username, email, password }) => {

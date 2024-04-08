@@ -26,13 +26,12 @@ import routerBindings, {
   NavigateToResource,
   UnsavedChangesNotifier,
 } from '@refinedev/react-router-v6';
-import { dataProvider } from './providers/dataProvider';
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { ColorModeContextProvider } from './contexts/color-mode';
 import { DatasetList, DatasetShow } from './pages/datasets';
 import { UsersShow, UsersList } from './pages/users';
 import { DashboardPage } from './pages/dashboard';
-import { authProvider } from './providers/authProvider';
+import { authProvider } from './providers/auth/authProvider';
 import { datasetsProvider } from './providers/datasets/datasetsProvider';
 
 function App() {
@@ -47,7 +46,7 @@ function App() {
               {/* <DevtoolsProvider> */}
               <Refine
                 dataProvider={{
-                  default: dataProvider,
+                  default: datasetsProvider,
                   datasets: datasetsProvider,
                 }}
                 notificationProvider={useNotificationProvider}
@@ -58,7 +57,7 @@ function App() {
                     name: 'dashboard',
                     list: '/',
                     meta: {
-                      dataProviderName: 'default',
+                      dataProviderName: 'datasets',
                       icon: <DashboardIcon />,
                     },
                   },
@@ -108,7 +107,6 @@ function App() {
                       </Authenticated>
                     }
                   >
-                    {/* <Route index element={<NavigateToResource resource='datasets' />} /> */}
                     <Route index element={<DashboardPage />} />
                     <Route path='/datasets'>
                       <Route index element={<DatasetList />} />

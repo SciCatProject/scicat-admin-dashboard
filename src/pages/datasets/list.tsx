@@ -1,9 +1,7 @@
 import { IResourceComponentsProps, useGo } from '@refinedev/core';
 import { EditButton, ShowButton, List, useDataGrid } from '@refinedev/mui';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { IDataset } from '../../interfaces/datasets';
-import { useCount } from '../../hooks/useHook';
-import { useEffect, useState } from 'react';
+import { IDataset } from '../../providers/datasets/datasetsInterface';
 const ActionCell = ({ row }: any) => {
   const go = useGo();
 

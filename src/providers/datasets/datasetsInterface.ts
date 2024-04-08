@@ -12,7 +12,12 @@ export interface DatasetsCountPerMonth {
   [key: string]: number;
 }
 
+export interface DatasetWithCreationTime {
+  creationTime: string;
+  id: string;
+  [key: string]: string;
+}
 export interface DatasetsLineChartProps {
-  data: IDataset[];
+  data: DatasetWithCreationTime[] | never[];
   count: number;
 }

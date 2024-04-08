@@ -1,21 +1,22 @@
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import Grid from '@mui/material/Grid';
-import { useDataGrid } from '@refinedev/mui';
 import { DatasetsLineChart } from '../../components/dashboard/datasetsChart';
-import { IDataset } from '../../interfaces/datasets';
-export const DashboardPage = () => {
-  const filters = `filter=${encodeURIComponent(
-    JSON.stringify({
-      fields: ['creationTime'],
-      limits: { limit: 50000, skip: 0, order: 'creationTime:asc' },
-    })
-  )}`;
+import { DatasetWithCreationTime } from '../../providers/datasets/datasetsInterface';
+import { useCustom } from '@refinedev/core';
+import { LoadingSpinner } from '../../components/common/loading';
 
-  const { tableQueryResult } = useDataGrid<IDataset>({
-    resource: 'dashboard',
-    filters: {
-      initial: [
+export const DashboardPage = () => {
+  const filters = {
+    fields: ['creationTime'],
+    limits: { limit: 50000, skip: 0, order: 'creationTime:asc' },
+  };
+
+  const { data, isLoading } = useCustom<DatasetWithCreationTime[]>({
+    method: 'get',
+    url: 'datasets',
+    config: {
+      filters: [
         {
           field: 'filters',
           operator: 'eq',
@@ -25,15 +26,15 @@ export const DashboardPage = () => {
     },
   });
 
-  const data = tableQueryResult.data?.data ?? [];
-  const count = tableQueryResult.data?.total ?? 0;
+  const datasets = data?.data || [];
+  const count = data?.data.length || 0;
 
   return (
     <Grid container columns={24} spacing={2}>
       <Grid item xs={24} sm={24} md={24} lg={24} xl={24}>
         <Card>
           <CardHeader title='Monthly Dataset Creation Overview' />
-          <DatasetsLineChart data={data} count={count} />
+          {isLoading ? <LoadingSpinner /> : <DatasetsLineChart data={datasets} count={count} />}
         </Card>
       </Grid>
     </Grid>

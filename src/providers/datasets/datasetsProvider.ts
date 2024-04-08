@@ -1,7 +1,9 @@
-import { DataProvider } from '@refinedev/core';
+import { BaseRecord, CustomResponse, DataProvider } from '@refinedev/core';
 import simpleDataProvider from '@refinedev/simple-rest';
 import { API_URL, TOKEN_KEY } from '../../contexts/constant';
 import { encode } from 'punycode';
+import { buildURL, fetchResource } from '../fetchHelpers';
+import { DatasetWithCreationTime, IDataset } from './datasetsInterface';
 
 const simpleRestProvider = simpleDataProvider(API_URL);
 export const datasetsProvider: DataProvider = {
@@ -18,46 +20,81 @@ export const datasetsProvider: DataProvider = {
       const data = await response.json();
       return { data };
     } catch (error) {
-      console.error('Error in getOne:', error);
+      console.error(`Error in ${resource} getOne:`, error);
       throw error;
     }
   },
   getList: async ({ resource, pagination, sorters, filters, meta }: any) => {
     const facets = ['type', 'creationLocation', 'ownerGroup', 'keywords'];
-    let limits: any = {
-      skip: pagination?.current * pagination?.pageSize || 0,
-      limit: pagination?.pageSize || 25,
+    const { current = 1, pageSize = 25 } = pagination;
+    const limits = {
+      skip: current * pageSize,
+      limit: pageSize,
       order: 'creationTime:asc',
     };
 
-    const fullQueryParams = `fields=${encodeURIComponent(
-      JSON.stringify({})
-    )}&limits=${encodeURIComponent(JSON.stringify(limits))}
-    `;
-
-    const fullFacetParams = `fields=${encodeURIComponent(
-      JSON.stringify({ mode: {} })
-    )}&facets=${encodeURIComponent(JSON.stringify(facets))}`;
-
-    limits;
-    const fullQueryURL = `${API_URL}/datasets/fullquery?${fullQueryParams}`;
-    const fullFacetURL = `${API_URL}/datasets/fullfacet?${fullFacetParams}`;
-
-    const fullQueryRes = await fetch(fullQueryURL, {
-      headers: { Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}` },
-    });
-    const fullFacetRes = await fetch(fullFacetURL, {
-      headers: { Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}` },
-    });
-
-    if (fullQueryRes.status < 200 || fullQueryRes.status > 299) throw fullQueryRes;
-
-    const data = await fullQueryRes.json();
-    const count = await fullFacetRes.json();
-
-    return {
-      data,
-      total: count[0].all[0].totalSets, // We'll cover this in the next steps.
+    const queryParams = {
+      fields: JSON.stringify({}),
+      limits: JSON.stringify(limits),
     };
+    const facetParams = {
+      fields: JSON.stringify({ mode: {} }),
+      facets: JSON.stringify(facets),
+    };
+
+    const fullQueryURL = buildURL({
+      resource,
+      endpoint: 'fullquery',
+      params: queryParams,
+    });
+    const fullFacetURL = buildURL({
+      resource,
+      endpoint: 'fullfacet',
+      params: facetParams,
+    });
+
+    try {
+      const [data, count] = await Promise.all([
+        fetchResource(fullQueryURL, meta.method),
+        fetchResource(fullFacetURL, meta.method),
+      ]);
+
+      return {
+        data,
+        total: count[0].all[0].totalSets,
+      };
+    } catch (error) {
+      console.error(`Error in ${resource} getList`, error);
+      throw error;
+    }
+  },
+
+  custom: async ({ pagination, sorters, filters, meta, config, url }: any) => {
+    const { fields = [], limits = { limit: 100, skip: 0, order: {} } } = filters[0].value;
+
+    const limitParams = {
+      limit: +limits.limit,
+      skip: +limits.skip,
+      order: limits.order,
+    };
+
+    const params = {
+      filter: JSON.stringify({
+        fields: fields,
+        limits: limitParams,
+      }),
+    };
+    const findAllURL = buildURL({
+      resource: url,
+      params: params,
+    });
+    try {
+      const data = await fetchResource(findAllURL);
+
+      return { data };
+    } catch (error) {
+      console.error(`Error in ${url} getList`, error);
+      throw error;
+    }
   },
 };

@@ -5,8 +5,8 @@ import { ResponsiveContainer, LineChart, Line, Tooltip, Legend, XAxis, YAxis } f
 import {
   DatasetsCountPerMonth,
   DatasetsLineChartProps,
-  IDataset,
-} from '../../../interfaces/datasets';
+  DatasetWithCreationTime,
+} from '../../../providers/datasets/datasetsInterface';
 import { ChartTooltip } from '../chartTooltip';
 
 export const DatasetsLineChart = ({ data, count }: DatasetsLineChartProps) => {
@@ -18,11 +18,14 @@ export const DatasetsLineChart = ({ data, count }: DatasetsLineChartProps) => {
     return `${year}-${month < 10 ? '0' + month : month}`;
   };
 
-  const countsPerMonth = data.reduce((acc: DatasetsCountPerMonth, dataset: IDataset) => {
-    const monthYear = getMonthYear(dataset.creationTime);
-    acc[monthYear] = (acc[monthYear] || 0) + 1;
-    return acc;
-  }, {});
+  const countsPerMonth = data.reduce(
+    (acc: DatasetsCountPerMonth, dataset: DatasetWithCreationTime) => {
+      const monthYear = getMonthYear(dataset.creationTime);
+      acc[monthYear] = (acc[monthYear] || 0) + 1;
+      return acc;
+    },
+    {}
+  );
 
   const chartData = Object.entries(countsPerMonth).map(([month, count]) => ({ month, count }));
   return (

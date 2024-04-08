@@ -1,1 +1,1 @@
-export const hey = "hey";
+export const utility = 'notImplemented';
