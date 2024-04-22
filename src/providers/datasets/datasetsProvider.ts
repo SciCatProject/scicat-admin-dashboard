@@ -90,7 +90,6 @@ export const datasetsProvider: DataProvider = {
     });
     try {
       const data = await fetchResource(findAllURL);
-
       return { data };
     } catch (error) {
       console.error(`Error in ${url} getList`, error);

@@ -33,6 +33,7 @@ import { UsersShow, UsersList } from './pages/users';
 import { DashboardPage } from './pages/dashboard';
 import { authProvider } from './providers/auth/authProvider';
 import { datasetsProvider } from './providers/datasets/datasetsProvider';
+import { Header } from './components';
 
 function App() {
   return (
@@ -94,6 +95,7 @@ function App() {
                         fallback={<CatchAllNavigate to='/login' />}
                       >
                         <ThemedLayoutV2
+                          Header={() => <Header />}
                           Title={({ collapsed }) => (
                             <ThemedTitleV2
                               collapsed={collapsed}

@@ -17,7 +17,6 @@ export interface DatasetWithCreationTime {
   id: string;
   [key: string]: string;
 }
-export interface DatasetsLineChartProps {
-  data: DatasetWithCreationTime[] | never[];
-  count: number;
+export interface DatasetCreationOverviewProps {
+  selectedYears: number | null;
 }

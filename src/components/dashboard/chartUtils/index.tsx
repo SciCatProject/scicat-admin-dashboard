@@ -10,9 +10,8 @@ export const ChartTooltip: React.FC<ChartTooltipProps> = ({ active, payload, suf
     return (
       <Box
         sx={{
-          color: '#fff',
-          fontWeight: 600,
-          background: 'rgba(255, 255, 255, 0.3)',
+          fontWeight: 500,
+          background: 'rgba(100, 155, 255, 0.3)',
           padding: '4px 8px',
           borderRadius: '4px',
         }}
