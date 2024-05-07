@@ -1,19 +1,33 @@
-import { API_URL, TOKEN_KEY } from '../contexts/constant';
+import { BaseKey } from '@refinedev/core';
+import { getCookie } from '../utils/utils';
+import { envConfig } from '../../configuration';
 
-export type URLOptions = {
+interface URLParamsOptions {
   resource: string;
   endpoint?: string;
   params: Record<string, string>;
-};
+}
+
+interface URLIdOptions {
+  resource: string;
+  endpoint?: string;
+  id: BaseKey;
+}
 
 export type HttpMethods = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
-export const buildURL = ({ resource, endpoint, params }: URLOptions) => {
+export const buildUriWithParam = ({ resource, endpoint, params }: URLParamsOptions): string => {
   const query = new URLSearchParams(params).toString();
   const endpointPath = endpoint ? `/${endpoint}` : '';
-  const url = `${API_URL}/${resource}${endpointPath}?${query}`;
+  const apiUrl = envConfig.API_URL;
+  return `${apiUrl}/${resource}${endpointPath}?${query}`;
+};
 
-  return url;
+export const buildUriWithId = ({ resource, endpoint, id }: URLIdOptions): string => {
+  const encodedId = encodeURIComponent(id);
+  const endpointPath = endpoint ? `/${endpoint}` : '';
+  const apiUrl = envConfig.API_URL;
+  return `${apiUrl}/${resource}${endpointPath}/${encodedId}`;
 };
 
 export const fetchResource = async (url: string, method: HttpMethods = 'GET') => {
@@ -21,7 +35,7 @@ export const fetchResource = async (url: string, method: HttpMethods = 'GET') =>
     method,
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
+      Authorization: `Bearer ${getCookie(envConfig.TOKEN_KEY)}`,
     },
   });
   if (!response.ok) throw new Error(`Failed to fetch data: ${response.url}`);

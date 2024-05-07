@@ -1,5 +1,5 @@
 import { IResourceComponentsProps } from '@refinedev/core';
-import { EditButton, ShowButton, List, useDataGrid } from '@refinedev/mui';
+import { ShowButton, List, useDataGrid } from '@refinedev/mui';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 const columns: GridColDef<IUsers>[] = [
@@ -15,7 +15,7 @@ const columns: GridColDef<IUsers>[] = [
       return (
         <>
           <ShowButton hideText recordItemId={row.id} />
-          <EditButton hideText recordItemId={row.id} />
+          {/* <EditButton hideText recordItemId={row.id} /> */}
         </>
       );
     },
@@ -33,7 +33,6 @@ export const UsersList: React.FC<IResourceComponentsProps> = () => {
         initialState={{
           columns: {
             columnVisibilityModel: {
-              // Hide columns status and traderName, the other columns will remain visible
               status: false,
               traderName: false,
             },

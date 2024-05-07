@@ -19,7 +19,7 @@ const ActionCell = ({ row }: any) => {
   return (
     <>
       <ShowButton hideText onClick={handleOnClick} />
-      <EditButton hideText recordItemId={row.id} />
+      {/* <EditButton hideText recordItemId={row.id} /> */}
     </>
   );
 };

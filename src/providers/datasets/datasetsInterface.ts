@@ -6,6 +6,7 @@ export interface IDataset {
   type: string;
   pid: string;
   creationTime: string;
+  [key: string]: unknown;
 }
 
 export interface DatasetsCountPerMonth {

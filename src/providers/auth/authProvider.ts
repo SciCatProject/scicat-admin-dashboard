@@ -1,10 +1,16 @@
-import type { AuthBindings } from '@refinedev/core';
-import { API_URL, TOKEN_KEY } from '../../contexts/constant';
+import type { AuthProvider } from '@refinedev/core';
+import { JwtPayload, jwtDecode } from 'jwt-decode';
+import { getCookie, removeCookie, setCookie } from '../../utils/utils';
+import { envConfig } from '../../../configuration';
 
-export const authProvider: AuthBindings = {
+type jwtTokenWithUsername = JwtPayload & {
+  username: string;
+};
+
+export const authProvider: AuthProvider = {
   login: async ({ username, email, password }) => {
     if ((username || email) && password) {
-      const response = await fetch(`${API_URL}/users/login`, {
+      const response = await fetch(`${envConfig.API_URL}/users/login`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -17,9 +23,10 @@ export const authProvider: AuthBindings = {
       });
 
       const { access_token } = await response.json();
+      const decodedToken = jwtDecode(access_token);
 
       if (response.ok) {
-        localStorage.setItem(TOKEN_KEY, access_token);
+        setCookie(envConfig.TOKEN_KEY, access_token, decodedToken);
 
         return {
           success: true,
@@ -37,14 +44,14 @@ export const authProvider: AuthBindings = {
     };
   },
   logout: async () => {
-    localStorage.removeItem(TOKEN_KEY);
+    removeCookie(envConfig.TOKEN_KEY);
     return {
       success: true,
       redirectTo: '/login',
     };
   },
   check: async () => {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getCookie(envConfig.TOKEN_KEY);
     if (token) {
       return {
         authenticated: true,
@@ -58,11 +65,12 @@ export const authProvider: AuthBindings = {
   },
   getPermissions: async () => null,
   getIdentity: async () => {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getCookie(envConfig.TOKEN_KEY);
+
     if (token) {
+      const decodedToken = jwtDecode(token) as jwtTokenWithUsername;
       return {
-        id: 1,
-        name: 'Admin',
+        name: decodedToken.username,
         avatar: 'https://i.pravatar.cc/300',
       };
     }

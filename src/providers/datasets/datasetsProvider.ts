@@ -1,23 +1,19 @@
-import { BaseRecord, CustomResponse, DataProvider } from '@refinedev/core';
+import { DataProvider } from '@refinedev/core';
 import simpleDataProvider from '@refinedev/simple-rest';
-import { API_URL, TOKEN_KEY } from '../../contexts/constant';
-import { encode } from 'punycode';
-import { buildURL, fetchResource } from '../fetchHelpers';
-import { DatasetWithCreationTime, IDataset } from './datasetsInterface';
+import { envConfig } from '../../../configuration';
+import { buildUriWithId, buildUriWithParam, fetchResource } from '../fetchHelpers';
 
-const simpleRestProvider = simpleDataProvider(API_URL);
+const simpleRestProvider = simpleDataProvider(envConfig.API_URL);
 export const datasetsProvider: DataProvider = {
   ...simpleRestProvider,
   getOne: async ({ resource, id }) => {
     try {
-      const response = await fetch(`${API_URL}/datasets/${encodeURIComponent(id)}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}` },
+      const findOneURL = buildUriWithId({
+        resource,
+        id,
       });
 
-      if (!response.ok) {
-        throw new Error(`Error fetching resource: ${response.statusText}`);
-      }
-      const data = await response.json();
+      const data = await fetchResource(findOneURL);
       return { data };
     } catch (error) {
       console.error(`Error in ${resource} getOne:`, error);
@@ -26,11 +22,11 @@ export const datasetsProvider: DataProvider = {
   },
   getList: async ({ resource, pagination, sorters, filters, meta }: any) => {
     const facets = ['type', 'creationLocation', 'ownerGroup', 'keywords'];
-    const { current = 1, pageSize = 25 } = pagination;
+    const { current = 0, pageSize = 25 } = pagination;
     const limits = {
-      skip: current * pageSize,
+      skip: current <= 1 ? 0 : (current - 1) * pageSize,
       limit: pageSize,
-      order: 'creationTime:asc',
+      order: 'creationTime:desc',
     };
 
     const queryParams = {
@@ -42,12 +38,12 @@ export const datasetsProvider: DataProvider = {
       facets: JSON.stringify(facets),
     };
 
-    const fullQueryURL = buildURL({
+    const fullQueryURL = buildUriWithParam({
       resource,
       endpoint: 'fullquery',
       params: queryParams,
     });
-    const fullFacetURL = buildURL({
+    const fullFacetURL = buildUriWithParam({
       resource,
       endpoint: 'fullfacet',
       params: facetParams,
@@ -58,7 +54,6 @@ export const datasetsProvider: DataProvider = {
         fetchResource(fullQueryURL, meta.method),
         fetchResource(fullFacetURL, meta.method),
       ]);
-
       return {
         data,
         total: count[0].all[0].totalSets,
@@ -84,7 +79,7 @@ export const datasetsProvider: DataProvider = {
         limits: limitParams,
       }),
     };
-    const findAllURL = buildURL({
+    const findAllURL = buildUriWithParam({
       resource: url,
       params: params,
     });
