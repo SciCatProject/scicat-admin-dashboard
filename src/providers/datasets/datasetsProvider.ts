@@ -1,4 +1,4 @@
-import { DataProvider } from '@refinedev/core';
+import { DataProvider, Pagination } from '@refinedev/core';
 import simpleDataProvider from '@refinedev/simple-rest';
 import { envConfig } from '../../../configuration';
 import { buildUriWithId, buildUriWithParam, fetchResource } from '../fetchHelpers';
@@ -20,9 +20,9 @@ export const datasetsProvider: DataProvider = {
       throw error;
     }
   },
-  getList: async ({ resource, pagination, sorters, filters, meta }: any) => {
+  getList: async ({ resource, pagination, sorters, filters, meta }) => {
     const facets = ['type', 'creationLocation', 'ownerGroup', 'keywords'];
-    const { current = 0, pageSize = 25 } = pagination;
+    const { current = 0, pageSize = 25 } = pagination as Pagination;
     const limits = {
       skip: current <= 1 ? 0 : (current - 1) * pageSize,
       limit: pageSize,
@@ -51,8 +51,8 @@ export const datasetsProvider: DataProvider = {
 
     try {
       const [data, count] = await Promise.all([
-        fetchResource(fullQueryURL, meta.method),
-        fetchResource(fullFacetURL, meta.method),
+        fetchResource(fullQueryURL, meta?.method),
+        fetchResource(fullFacetURL, meta?.method),
       ]);
       return {
         data,
