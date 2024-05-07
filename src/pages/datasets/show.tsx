@@ -27,7 +27,7 @@ export const DatasetShow: React.FC<IResourceComponentsProps> = () => {
 
   return (
     <Show resource='datasets' recordItemId={data.data.pid}>
-      <ReactJson src={data.data} collapsed={1} theme={theme}></ReactJson>
+      <ReactJson src={data.data} collapsed={1} theme={theme} name={false}></ReactJson>
     </Show>
   );
 };
