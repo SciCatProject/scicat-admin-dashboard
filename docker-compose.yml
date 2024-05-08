@@ -1,0 +1,10 @@
+version: "3.4"
+services:
+  dashboard:
+    build:
+      context: .
+    image: ghcr.io/scicatproject/scicat-admin-dashboard:latest
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./config.js:/usr/share/nginx/html/config.js
