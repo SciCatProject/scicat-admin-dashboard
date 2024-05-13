@@ -1,0 +1,4 @@
+// All the feature flags and environment variables are defined here
+window.NODE_ENV = 'development';
+window.API_URL = 'http://localhost:3000/api/v3';
+window.TOKEN_KEY = 'scicat-admin-dev';

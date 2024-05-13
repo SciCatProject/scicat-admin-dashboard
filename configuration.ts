@@ -1,5 +1,8 @@
-const envSettings = window as any;
+const envSettings = window as unknown as {
+  API_URL: string;
+  TOKEN_KEY: string;
+};
 export class envConfig {
-  static API_URL = envSettings.VITE_API_URL;
-  static TOKEN_KEY = envSettings.VITE_TOKEN_KEY;
+  static API_URL = envSettings.API_URL;
+  static TOKEN_KEY = envSettings.TOKEN_KEY;
 }
